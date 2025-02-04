@@ -138,3 +138,14 @@ association.main - Indicates whether the route table is the main route table for
 ## Note:
 --> association.main will give main route table, even we may have multiple routetables  in default vpc, so we need this filter to get main route table.
 
+
+
+
+# Test module:
+module "vpc" {
+  source = "../Terraform_AWS_VPC"  # for Local reference
+}
+
+module "vpc" {
+  source = "git::Link"  # for Local reference
+}
