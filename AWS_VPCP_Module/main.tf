@@ -82,6 +82,10 @@ resource "aws_db_subnet_group" "db_group" {
 # create a elastic ip
 resource "aws_eip" "nat_eip" {   # it is creating elastic ip 
   domain   = "vpc"
+  tags = merge(var.common_tags, 
+  {
+    Name = "${local.resource_name}-eip"
+  })
 }
 
 resource "aws_nat_gateway" "main" {  # main because we create only one
@@ -96,4 +100,73 @@ resource "aws_nat_gateway" "main" {  # main because we create only one
   # To ensure proper ordering, it is recommended to add an explicit dependency
   # on the Internet Gateway for the VPC.
   depends_on = [aws_internet_gateway.main]
+}
+
+
+# Lets create 3 Route Tables.
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id # base on this vpc create route table  
+
+  tags = merge(var.common_tags,var.public_route_table_tags,
+    {
+        Name = "${local.resource_name}-public"
+    } )
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id # base on this vpc create route table  
+
+  tags = merge(var.common_tags,var.private_route_table_tags,
+    {
+        Name = "${local.resource_name}-private"
+    } )
+}
+
+resource "aws_route_table" "database" {
+  vpc_id = aws_vpc.main.id # base on this vpc create route table  
+
+  tags = merge(var.common_tags,var.database_route_table_tags,
+    {
+        Name = "${local.resource_name}-database"
+    } )
+}
+
+
+# Lets create routes 
+resource "aws_route" "public" {
+  route_table_id            = aws_route_table.public.id   #public subnets kosam
+  destination_cidr_block    = "0.0.0.0/0"  # internet ni access chey
+  gateway_id = aws_internet_gateway.main.id   # IGW use chesko 
+}
+
+resource "aws_route" "private_nat" {
+  route_table_id            = aws_route_table.private.id   #private subnets kosam
+  destination_cidr_block    = "0.0.0.0/0"  # internet ni access chey
+  gateway_id = aws_nat_gateway.main.id   # NAT use chesko 
+}
+
+resource "aws_route" "database_nat" {
+  route_table_id            = aws_route_table.database.id  # database subnets kosam
+  destination_cidr_block    = "0.0.0.0/0"  # internet ni access chey
+  gateway_id = aws_nat_gateway.main.id   # NAT use chesko 
+}
+
+
+# lets Associate route tables with subnets 
+resource "aws_route_table_association" "public" {
+    count = length(var.public_subnet_cidrs)   # based on this count we created subnets so we use same count to create associations
+    subnet_id      = aws_subnet.public[count.index].id # (0 and 1) i.e 2 subnets will be associated with this below subnet 
+    route_table_id = aws_route_table.public.id # public subnet id will be given so that it will be associated
+}
+
+resource "aws_route_table_association" "private" {
+    count = length(var.private_subnet_cidrs)
+    subnet_id      = aws_subnet.private[count.index].id
+    route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "database" {
+    count = length(var.database_subnet_cidrs)
+    subnet_id      = aws_subnet.database[count.index].id
+    route_table_id = aws_route_table.database.id
 }

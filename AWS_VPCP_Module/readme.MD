@@ -83,4 +83,22 @@ az_info = {
 
 8. lets create NAT gate way 
 
--> first we need elastic public ip
+-> first we need elastic public ip, then NAT (associate it)
+
+## NAT --> depends_on = [aws_internet_gateway.main] 
+-> NAT will work only if we have IGW, but both resources are different (no dependency by default)
+-> so we need to use "depends_on" to tell terraform.
+
+
+---> create 3 route Tables --> public,private,database 
+
+-> now create routes ..
+1. public route -> IGW to public subnet  
+(public subnets, IGW use cheskoni internet access chestay)
+2. private route -> NAT to private
+(private subnets, NAT gate way use cheskoni internet connect avtay )
+
+
+--> we need to associate route tables with respective subnets
+* we have 6 subnets so we create 6 route table associations (but we have 3 route tables) by using count
+-> 2 subnets will be associated by one route table  
