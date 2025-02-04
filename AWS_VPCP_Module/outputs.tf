@@ -11,3 +11,7 @@ output "az_info" {
 output "default_vpc_info" {
   value = data.aws_vpc.default
 }
+
+output "main_route_table_default_vpc_info" {
+  value = data.aws_route_table.main
+}

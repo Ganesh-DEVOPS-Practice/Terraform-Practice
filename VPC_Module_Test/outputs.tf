@@ -10,3 +10,7 @@ output "vpc_id_we_get_in_test_mod" {
 output "default_vpc_info"{
   value = module.vpc.default_vpc_info
 }
+
+output "main_route_table_default_vpc_info" {
+  value = module.vpc.main_route_table_default_vpc_info
+}
