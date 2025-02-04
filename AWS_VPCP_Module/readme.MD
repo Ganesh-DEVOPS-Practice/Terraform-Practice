@@ -102,3 +102,26 @@ az_info = {
 --> we need to associate route tables with respective subnets
 * we have 6 subnets so we create 6 route table associations (but we have 3 route tables) by using count
 -> 2 subnets will be associated by one route table  
+
+
+
+## VPC peering
+-> we ask user weather he wants vpc peering or not, if yes then our module will connect to default vpc in the same region 
+
+we use count as 1 if peering req, else 0 ( we use this condition)
+--> create peering.tf file for this
+
+--> use data source to get default vpc --> we have flag default = true to get it 
+
+o/p is ex:
+default_vpc_inf = {
+  arn = "ertyuiop"
+  | | | 
+  id = "23456789" # default vpc id
+}
+
+-> can get it by default_vpc_inf.id 
+-> we have auto_accept parameter, peering in acceptor vpc will be accepted automatically 
+
+@ now we created VPC peering (maain road between 2 vpcs)
+but we need to add internal routes ( connection between area to area b/w two villages)

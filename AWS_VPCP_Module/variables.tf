@@ -106,3 +106,14 @@ variable "database_route_table_tags" {
   type = map
   default = {}
 }
+
+# its a optional (if it is true then vpc will peer with default)
+variable "is_peering_required" {
+  type = bool
+  default = false
+}
+
+variable "vpc_peering_tags" {
+  type = map
+  default = {}
+}

@@ -5,3 +5,8 @@ output "vpc_id_we_get_in_test_mod" {
 # output "az_info" {
 #   value = module.vpc.az_info
 # }
+
+
+output "default_vpc_info"{
+  value = module.vpc.default_vpc_info
+}
