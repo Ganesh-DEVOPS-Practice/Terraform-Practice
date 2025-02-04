@@ -59,7 +59,8 @@ public_ip -> Public IP of the instance created.
 Private_ip -> private IP of the instance created.
 instance_id -> instance ID of the instance created.
 
-# instance_type allowed are "t3.micro","t3.medium","t3.small"
+---> instance_type allowed are 
+# "t3.micro","t3.medium","t3.small"
 
 -------------------------------------------------------------------------------------------
 
