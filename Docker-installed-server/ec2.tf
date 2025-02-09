@@ -17,6 +17,7 @@ resource "aws_instance" "TestVm" {
       "sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo",
       "sudo dnf -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin",
       "sudo systemctl enable --now docker",
+      "sudo usermod -aG docker ec2-user"
 
       # "sudo dnf install nginx -y",     these for nginx
       # "sudo systemctl start nginx",
@@ -29,7 +30,7 @@ resource "aws_instance" "TestVm" {
   tags = merge(
     var.Tags,
     {
-      Name = "Ansible-Vm"
+      Name = "Docker-Vm"
     }
   )
 }
